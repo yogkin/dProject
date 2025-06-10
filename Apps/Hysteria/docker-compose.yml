@@ -2,48 +2,36 @@ name: hysteria
 services:
   hysteria:
     image: tobyxdd/hysteria:latest
-    container_name: hysteria
     restart: unless-stopped
     ports:
-      - "${HYSTERIA_PORT:-443}:443"
-    environment:
-      - HYSTERIA_DOMAIN=${HYSTERIA_DOMAIN:-your.domain.com}
-      - HYSTERIA_EMAIL=${HYSTERIA_EMAIL:-your@email.com}
-      - HYSTERIA_PASSWORD=${HYSTERIA_PASSWORD:-YOUR_STRONG_PASSWORD_HERE}
-      - HYSTERIA_MASQUERADE_URL=${HYSTERIA_MASQUERADE_URL:-https://news.ycombinator.com/}
-      - HYSTERIA_PORT=${HYSTERIA_PORT:-443}
+      - target: 443
+        published: "443"
+        protocol: tcp
+      - target: 443
+        published: "443"
+        protocol: udp
     volumes:
+      - type: bind
+        source: ./config.yaml
+        target: /etc/hysteria.yaml
       - acme:/acme
-      - ./config.yaml:/etc/hysteria.yaml:ro
-      - ./entrypoint.sh:/entrypoint.sh:ro
-    command: ["/bin/bash", "/entrypoint.sh"]
+    command: ["server", "-c", "/etc/hysteria.yaml"]
+    container_name: hysteria
     x-casaos:
       ports:
         - container: "443"
           description:
-            en_us: Hysteria QUIC Port
-            zh_cn: Hysteria QUIC端口
-      envs:
-        - container: HYSTERIA_DOMAIN
+            en_us: "Hysteria QUIC Port (TCP/UDP)"
+            zh_cn: "Hysteria QUIC端口 (TCP/UDP)"
+      volumes:
+        - container: /etc/hysteria.yaml
           description:
-            en_us: Domain name for SSL certificate
-            zh_cn: 用于SSL证书的域名
-        - container: HYSTERIA_EMAIL
+            en_us: "Hysteria configuration file"
+            zh_cn: "Hysteria配置文件"
+        - container: /acme
           description:
-            en_us: Email address for SSL certificate
-            zh_cn: 用于SSL证书的邮箱地址
-        - container: HYSTERIA_PASSWORD
-          description:
-            en_us: Connection password (use strong password)
-            zh_cn: 连接密码（请使用强密码）
-        - container: HYSTERIA_MASQUERADE_URL
-          description:
-            en_us: Masquerade target URL
-            zh_cn: 伪装目标网站URL
-        - container: HYSTERIA_PORT
-          description:
-            en_us: External port for Hysteria service
-            zh_cn: Hysteria服务的外部端口
+            en_us: "SSL certificate storage directory"
+            zh_cn: "SSL证书存储目录"
 
 volumes:
   acme:
@@ -52,41 +40,67 @@ x-casaos:
   architectures:
     - amd64
     - arm64
-  author: CasaOS Community
-  category: Network Tools
+  main: hysteria
   description:
-    en_us: Hysteria is a feature-packed proxy & relay tool optimized for lossy, unstable connections (e.g. satellite networks, congested public Wi-Fi, connecting to foreign servers from China).
-    zh_cn: Hysteria 是一个功能丰富的代理和中继工具，专为有损、不稳定的连接进行了优化（例如卫星网络、拥挤的公共Wi-Fi、从中国连接到国外服务器）。
+    en_us: |
+      Hysteria is a feature-packed proxy & relay tool optimized for lossy, unstable connections (e.g. satellite networks, congested public Wi-Fi, connecting to foreign servers from China). It supports TCP/UDP forwarding, HTTP/SOCKS5 proxy, and more.
+    zh_cn: |
+      Hysteria 是一个功能丰富的代理和中继工具，专为有损、不稳定的连接进行了优化（例如卫星网络、拥挤的公共Wi-Fi、从中国连接到国外服务器）。支持TCP/UDP转发、HTTP/SOCKS5代理等功能。
+    de_de: |
+      Hysteria ist ein funktionsreiches Proxy- und Relay-Tool, das für verlustbehaftete, instabile Verbindungen optimiert wurde (z.B. Satellitennetzwerke, überlastete öffentliche Wi-Fi-Verbindungen, Verbindungen zu ausländischen Servern aus China).
+    es_es: |
+      Hysteria es una herramienta de proxy y retransmisión repleta de funciones optimizada para conexiones con pérdidas e inestables (por ejemplo, redes satelitales, Wi-Fi público congestionado, conexión a servidores extranjeros desde China).
+    fr_fr: |
+      Hysteria est un outil de proxy et de relais riche en fonctionnalités optimisé pour les connexions avec pertes et instables (par exemple, réseaux satellites, Wi-Fi public encombré, connexion à des serveurs étrangers depuis la Chine).
+    it_it: |
+      Hysteria è uno strumento proxy e relay ricco di funzionalità ottimizzato per connessioni instabili e con perdite (ad esempio reti satellitari, Wi-Fi pubblico congestionato, connessione a server stranieri dalla Cina).
+    ru_ru: |
+      Hysteria - это многофункциональный инструмент прокси и ретрансляции, оптимизированный для нестабильных соединений с потерями (например, спутниковые сети, перегруженный общественный Wi-Fi, подключение к зарубежным серверам из Китая).
+    pt_br: |
+      Hysteria é uma ferramenta de proxy e retransmissão repleta de recursos otimizada para conexões instáveis e com perdas (por exemplo, redes de satélite, Wi-Fi público congestionado, conexão a servidores estrangeiros da China).
+    ja_jp: |
+      Hysteriaは、不安定で損失の多い接続（衛星ネットワーク、混雑した公共Wi-Fi、中国から海外サーバーへの接続など）に最適化された機能満載のプロキシ＆リレーツールです。
+    ko_kr: |
+      Hysteria는 손실이 많고 불안정한 연결(위성 네트워크, 혼잡한 공용 Wi-Fi, 중국에서 해외 서버 연결 등)에 최적화된 기능이 풍부한 프록시 및 릴레이 도구입니다.
+  tagline:
+    en_us: "High-performance proxy tool based on QUIC protocol"
+    zh_cn: "基于QUIC协议的高性能代理工具"
+    de_de: "Hochleistungs-Proxy-Tool basierend auf dem QUIC-Protokoll"
+    es_es: "Herramienta de proxy de alto rendimiento basada en el protocolo QUIC"
+    fr_fr: "Outil proxy haute performance basé sur le protocole QUIC"
+    it_it: "Strumento proxy ad alte prestazioni basato sul protocollo QUIC"
+    ru_ru: "Высокопроизводительный прокси-инструмент на основе протокола QUIC"
+    pt_br: "Ferramenta de proxy de alto desempenho baseada no protocolo QUIC"
+    ja_jp: "QUICプロトコルベースの高性能プロキシツール"
+    ko_kr: "QUIC 프로토콜 기반 고성능 프록시 도구"
   developer: HyNetwork
-  icon: https://raw.githubusercontent.com/HyNetwork/hysteria/master/docs/hysteria-logo.png
+  author: CasaOS Community
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-LinuxServer-AppStore@main/default-icon.svg
   screenshot_link:
     - https://hysteria.network/assets/images/hero-3ad41c6de9e93bb1e7b7ad88dcc6d90b.png
-  tagline:
-    en_us: High-performance proxy tool based on QUIC protocol
-    zh_cn: 基于QUIC协议的高性能代理工具
-  thumbnail: https://raw.githubusercontent.com/HyNetwork/hysteria/master/docs/hysteria-logo.png
-  index: /
-  port_map: "${HYSTERIA_PORT:-443}"
+  title:
+    en_us: Hysteria
+    zh_cn: Hysteria
+  category: Network
+  port_map: "443"
   scheme: https
   tips:
     custom: |-
-      安装后可在环境变量中配置：
+      配置文件位置：./config.yaml
       
-      必填配置：
-      - HYSTERIA_DOMAIN: 你的域名
-      - HYSTERIA_EMAIL: 你的邮箱
-      - HYSTERIA_PASSWORD: 强密码
-      
-      可选配置：
-      - HYSTERIA_PORT: 外部端口（默认443）
-      - HYSTERIA_MASQUERADE_URL: 伪装网站
+      首次使用前请修改配置：
+      1. 替换域名：your.domain.net -> 你的域名
+      2. 替换邮箱：your@email.com -> 你的邮箱  
+      3. 修改密码：YOUR_STRONG_PASSWORD_HERE -> 强密码
       
       重要提醒：
       - 需要有效域名和DNS解析
-      - 确保配置的端口已开放
+      - 确保443端口已开放
       - 系统会自动申请SSL证书
       - 修改配置后需重启容器
       
+      客户端连接信息：
+      - 服务器：你的域名:443
+      - 密码：你设置的密码
+      
       更多配置参考：https://hysteria.network/docs/
-  title:
-    custom: Hysteria

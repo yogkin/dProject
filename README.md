@@ -25,21 +25,9 @@
 
 ## 🔧 Hysteria 配置说明
 
-### 推荐配置方式：环境变量
+### 配置方式：配置文件
 
-在CasaOS应用安装界面或者应用设置中，可以直接配置以下环境变量：
-
-| 环境变量 | 说明 | 默认值 | 是否必填 |
-|---------|------|--------|----------|
-| HYSTERIA_DOMAIN | 域名 | your.domain.com | ✅ 必填 |
-| HYSTERIA_EMAIL | 邮箱 | your@email.com | ✅ 必填 |
-| HYSTERIA_PASSWORD | 连接密码 | YOUR_STRONG_PASSWORD_HERE | ✅ 必填 |
-| HYSTERIA_PORT | 外部端口 | 443 | ❌ 可选 |
-| HYSTERIA_MASQUERADE_URL | 伪装网站 | https://news.ycombinator.com/ | ❌ 可选 |
-
-### 传统配置方式：配置文件
-
-如果您不设置环境变量，系统会使用配置文件模式，需要手动编辑 `config.yaml`：
+Hysteria使用配置文件进行配置，需要手动编辑 `config.yaml` 文件：
 
 1. **域名配置**: 修改配置文件中的域名设置
    ```yaml
@@ -56,11 +44,21 @@
      password: YOUR_STRONG_PASSWORD_HERE  # 请设置强密码
    ```
 
-### 端口自定义
+3. **伪装网站**: 可自定义伪装的目标网站
+   ```yaml
+   masquerade: 
+     type: proxy
+     proxy:
+       url: https://news.ycombinator.com/  # 可替换为其他网站
+       rewriteHost: true
+   ```
 
-- **外部端口**: 通过 `HYSTERIA_PORT` 环境变量或在CasaOS界面中修改端口映射
-- **内部端口**: 固定为443（HTTPS标准端口）
-- **端口映射**: `${HYSTERIA_PORT:-443}:443`
+### 网络配置
+
+- **端口映射**: 443:443 (TCP/UDP)
+- **协议支持**: 同时支持TCP和UDP协议
+- **端口说明**: 使用443端口（HTTPS标准端口）
+- **安全性**: 更好的容器隔离性
 
 ### 重要提醒
 
