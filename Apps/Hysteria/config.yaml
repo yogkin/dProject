@@ -1,0 +1,19 @@
+listen: :443
+
+acme:
+  domains:
+    - your.domain.net  # 请替换为您的域名
+  email: your@email.com  # 请替换为您的邮箱
+
+auth:
+  type: password
+  password: YOUR_STRONG_PASSWORD_HERE  # 请务必修改此密码
+
+masquerade: 
+  type: proxy
+  proxy:
+    url: https://news.ycombinator.com/ 
+    rewriteHost: true
+
+# Hysteria 服务器配置
+# 更多配置选项请参考: https://hysteria.network/docs/

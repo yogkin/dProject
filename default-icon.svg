@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="12" fill="#1E40AF"/>
+  <g transform="translate(12, 12)">
+    <!-- Network/Speed lines -->
+    <path d="M8 20L32 8L36 12" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M4 24L32 12L40 16" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M2 28L32 16L38 20" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.5"/>
+    
+    <!-- Central node -->
+    <circle cx="32" cy="20" r="4" fill="white"/>
+    <circle cx="32" cy="20" r="2" fill="#1E40AF"/>
+    
+    <!-- Speed indicator -->
+    <path d="M16 32L20 28L24 32" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M28 32L32 28L36 32" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="32" y="52" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="8" font-weight="bold">FAST</text>
+</svg> 
